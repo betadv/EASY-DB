@@ -1,1 +1,5 @@
-*
+.git
+old
+node_modules
+old
+tests.js

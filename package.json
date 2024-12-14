@@ -1,0 +1,31 @@
+{
+  "name": "@betadv/easy-db",
+  "version": "1.0.6-rewritten",
+  "description": "fast and easy to use no-sql local database",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests.js"
+  },
+  "keywords": [
+    "database",
+    "json",
+    "encrypted",
+    "readable",
+    "easy",
+    "multi",
+    "db"
+  ],
+  "author": "BetaDv",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BetaDv/EASY-DB.git"
+  },
+  "dependencies": {
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/events": "^3.0.3",
+    "@types/node": "^22.10.2"
+  }
+}
