@@ -3,3 +3,4 @@ old
 node_modules
 old
 tests.js
+tsconfig.json
