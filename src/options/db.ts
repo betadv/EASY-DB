@@ -1,11 +1,11 @@
-const defaults: any = {
+const dataDefaults: { path: string; prettier: boolean; autoLoad: boolean } = {
   path: "./database/main.betadb",
   prettier: false,
-  encryption: {
-    enabled: true,
-    secretKey: "beta-was-here",
-  },
   autoLoad: true,
 };
+const encryptionDefaults: { enabled: boolean; secretKey: string } = {
+  enabled: true,
+  secretKey: "beta-was-here",
+};
 
-export { defaults };
+export { dataDefaults, encryptionDefaults };

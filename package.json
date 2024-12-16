@@ -3,8 +3,9 @@
   "version": "1.0.6-rewritten",
   "description": "fast and easy to use no-sql local database",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "node tests.js"
+    "test": "npx tsx tests/tests.ts"
   },
   "keywords": [
     "database",
@@ -22,7 +23,8 @@
     "url": "https://github.com/BetaDv/EASY-DB.git"
   },
   "dependencies": {
-    "events": "^3.3.0"
+    "events": "^3.3.0",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@types/events": "^3.0.3",
