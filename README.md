@@ -4,7 +4,7 @@
 
 A free & easy to use database.
 
-### Features:
+### Features
 
 - JSON Database and (or) Encrypted Database
 - Automatic Database Creation (Including Path)
@@ -18,14 +18,14 @@ A free & easy to use database.
 - Sub-Property Support
 - Promise or Non Promise Based Database if Wanted
 
-### Changes:
+### Changes
 
 - [**X**] Database Options not Working Well When Multiple On
 - [**+**] Added, [**-**] Removed, [**X**] Fixed.
 
-### Links:
+### Links
 
-- DOCS: https://github.com/BetaDv/EASY-DB/wiki
-- BUGS / SUGGESTIONS: https://github.com/BetaDv/EASY-DB/issues
+- DOCS: <https://github.com/BetaDv/EASY-DB/wiki>
+- BUGS / SUGGESTIONS: <https://github.com/BetaDv/EASY-DB/issues>
 - DISCORD SUPPORT SERVER: /////
-- PACKAGE PAGE: https://www.npmjs.com/package/@betadv/easy-db
+- PACKAGE PAGE: <https://www.npmjs.com/package/@betadv/easy-db>

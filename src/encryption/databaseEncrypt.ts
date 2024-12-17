@@ -1,10 +1,7 @@
-import assert from "assert";
-
 import { settings } from "../options/encryption";
 import * as crypto from "crypto";
 
-const stretchKey = (key, keyLength) => {
-  let salt = crypto.randomBytes(16);
+const stretchKey = (key: string, keyLength: number) => {
   return crypto.pbkdf2Sync(key, "betadv-was-here", 100000, keyLength, "sha512");
 };
 

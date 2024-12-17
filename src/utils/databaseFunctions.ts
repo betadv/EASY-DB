@@ -1,39 +1,38 @@
-import fs from "fs";
 import { encrypt, decrypt } from "../encryption/databaseEncrypt";
+import { createFile, fileExists, readFile, writeFile } from "./fileManager";
 
 /**
  * Reads the database file and returns the data (doesn't affect encryption)
- *
  * @param {*} _this
  * @returns {object}
  */
-const readFile = (filePath): string => {
-  return fs.readFileSync(filePath, { encoding: "utf-8" });
+
+const dbFileExists = (_this: any): boolean => {
+  return fileExists(_this._options.path);
 };
 
 const readDB = (_this: any) => {
-  console.log(
-    encrypt(
-      {
-        name: "betadv",
-        age: 16,
-      },
-      _this._encryption.secretKey
-    )
-  );
+  const fileContent = readFile(_this._options.path);
+  console.log(fileContent);
 
-  const content = readFile(_this._options.path);
-
-  // CHECKS
-  if (_this._encryption.enabled === false) return content;
-
-  // RESULT
-  const decryptedContent: object = decrypt(
-    content,
+  if (_this._encryption.enabled === false) return fileContent;
+  let decryptedContent: string = decrypt(
+    fileContent,
     _this._encryption.secretKey
   );
 
   return decryptedContent;
 };
 
-export { readDB };
+const createDB = (_this: any) => {
+  let defaultContent: string;
+  if (_this._encryption.enabled === true)
+    defaultContent = encrypt({}, _this._encryption.secretKey);
+  else defaultContent = "{}";
+  createFile(_this._options.path, defaultContent);
+};
+
+// TODO: Writing to database function
+const writeDB = (_this: any, content: any) => {};
+
+export { readDB, dbFileExists, createDB, writeDB };

@@ -1,9 +1,19 @@
 import { EasyDB } from "../index";
 
-const db = new EasyDB();
+const db = new EasyDB(
+  {
+    path: "./database/main.betadb",
+    prettier: true,
+  },
+  {
+    enabled: true,
+    secretKey: "beta-was-here",
+  },
+  {
+    enabled: true,
+    detailedErrors: true,
+  }
+);
 
-console.log(db);
+// TEST INITIALIZATION
 db.init();
-// const originalText = "Sensitive information";
-// const encryptedText = db.__encrypt(originalText);
-// const decryptedText = db.__decrypt(encryptedText);
