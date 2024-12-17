@@ -66,9 +66,7 @@ class EasyDB {
     this._encryption = encryption;
     this._logging = logging;
   }
-
-  // TODO: Fix loop cause it's permanent for some reason and it doesn't stop, ever
-
+  
   // INITIALIZATION FUNCTION
   public init(): void {
     // PERMANENT LOOP UNTIL DATABASE LOADED
