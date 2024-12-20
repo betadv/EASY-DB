@@ -21,7 +21,7 @@ const dbConsole: any = {
       throw console.error(
         styleText(["bold", "redBright"], text) + "\n" + error
       );
-    console.error(styleText(["bold", "redBright"], text));
+    new Error(styleText(["bold", "redBright"], text));
   },
 };
 

@@ -66,7 +66,7 @@ class EasyDB {
     this._encryption = encryption;
     this._logging = logging;
   }
-  
+
   // INITIALIZATION FUNCTION
   public init(): void {
     // PERMANENT LOOP UNTIL DATABASE LOADED

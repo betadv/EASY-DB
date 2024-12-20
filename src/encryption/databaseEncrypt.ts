@@ -11,12 +11,8 @@ const encrypt = (contentObj: object, key: string): any => {
     stretchKey(key, 32),
     stretchKey(key, 16)
   );
-  let encrypted = cipher.update(
-    JSON.stringify(contentObj),
-    "utf-8",
-    settings.encryptionType
-  );
-  return encrypted + cipher.final(settings.encryptionType);
+  let encrypted = cipher.update(JSON.stringify(contentObj), "utf-8", "hex");
+  return encrypted + cipher.final("hex");
 };
 
 const decrypt = (encryptedContent: string, key: string): any => {
@@ -28,11 +24,7 @@ const decrypt = (encryptedContent: string, key: string): any => {
     stretchKey(key, 16)
   );
 
-  let decrypted = decipher.update(
-    encryptedContent,
-    settings.encryptionType,
-    "utf-8"
-  );
+  let decrypted = decipher.update(encryptedContent, "hex", "utf-8");
   return decrypted + decipher.final("utf-8");
 };
 
