@@ -1,6 +1,6 @@
-const settings: { algorithm: string; type: string } = {
+const settings: {
+  algorithm: string;
+} = {
   algorithm: "aes-256-cbc",
-  type: "hex",
 };
-
 export { settings };
