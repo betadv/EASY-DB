@@ -11,6 +11,7 @@ import { fileExists } from "../utils/fileManager";
  * @param {Object} options
  * @param {string} [path=./database/main.betadb] - The path to the database base file (default is "./database/main.betadb") [file extension must be .betadb]
  * @param {boolean} [prettier=false] - Whether to format the database file into a readable file (only works if encryption is disabled)
+ * @param {number} [interval=1000] - The rate (in miliseconds) at which the database file gets updated (the cache remains live)
  * @param {Object} encryption
  * @param {boolean} [encryption.enabled=true] - Whether to enable database encryption or not (default is true)
  * @param {string} [encryption.secretKey="beta-was-here"] - The secret key which the encryption method uses to keep your password safe (default is "beta-was-here")
@@ -39,17 +40,18 @@ import { fileExists } from "../utils/fileManager";
 
 class EasyDB {
   // CLASS PROPERTIES
-  private _options: { path: string; prettier: boolean };
-  private _encryption: { enabled: boolean; secretKey: string };
-  private _logging: { enabled: boolean; detailedErrors: boolean };
+  public _options: { path: string; prettier: boolean; interval: number };
+  public _encryption: { enabled: boolean; secretKey: string };
+  public _logging: { enabled: boolean; detailedErrors: boolean };
   private _ready: boolean = false;
-  private _cache: any;
+  private _cache: object = {};
 
   // CONSTRUCTOR
   constructor(
     private readonly options: {
       path: string;
       prettier: boolean;
+      interval: number;
     } = dataDefaults,
     private readonly encryption: {
       enabled: boolean;
@@ -60,8 +62,7 @@ class EasyDB {
       detailedErrors: boolean;
     } = logDefaults
   ) {
-    // super();
-
+    // super(); // remove comment from this when adding events
     this._options = options;
     this._encryption = encryption;
     this._logging = logging;
@@ -69,31 +70,28 @@ class EasyDB {
 
   // INITIALIZATION FUNCTION
   public init(): void {
-    // PERMANENT LOOP UNTIL DATABASE LOADED
+    // SHORT LOOP UNTIL DATABASE LOADED (IF IT FAILS IT WILL RETRY, MAXIMUM 5 ATTEMPTS)
     for (
-      let attempts: number = 0;
+      let attempts: number = 1;
       this._ready === false && attempts <= 5;
       attempts++
     ) {
+      dbConsole.info(this, locale.info.attemptingToLoad, {
+        attemptNumber: attempts,
+      });
       if (fileExists(this._options.path) === true) {
-        try {
-          this._cache = readDB(this);
-        } catch (err) {
-          return dbConsole.error(this, locale.errors.unableToRead, err);
-        }
+        this._cache = readDB(this);
         dbConsole.log(this, locale.success.loadedSuccessfuly);
         this._ready = true;
         return;
       }
-
-      try {
-        createDB(this);
-      } catch (err) {
-        return console.error(locale.errors.unableToCreateFile);
-      }
+      dbConsole.warning(this, locale.warning.databaseNotFound, {
+        pathToDB: this._options.path,
+      });
+      createDB(this);
     }
 
-    // TRY INITIALIZING DATABASE
+    return dbConsole.error(this, locale.errors.failedToLoadUnknown);
   }
 }
 

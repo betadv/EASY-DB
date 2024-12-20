@@ -1,2 +1,3 @@
 import { EasyDB } from "./src/structures/database";
-export { EasyDB };
+import { migrate } from "./src/utils/migrate";
+export { EasyDB, migrate };
