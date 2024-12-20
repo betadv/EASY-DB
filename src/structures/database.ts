@@ -85,6 +85,7 @@ class EasyDB {
         }
         dbConsole.log(this, locale.success.loadedSuccessfuly);
         this._ready = true;
+        return;
       }
 
       try {
