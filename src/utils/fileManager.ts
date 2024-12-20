@@ -1,4 +1,3 @@
-import { appendFileSync } from "fs";
 import fs from "fs-extra";
 
 const createFile = (path: any, content?: string): void => {
