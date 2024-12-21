@@ -40,16 +40,20 @@ const readDB = (_this: EasyDB): object => {
 };
 
 /**
- * Checks the database settings
+ * Checks and verifies if the database settings are valid and can proceed with the database initialization
  *
  * @param {EasyDB} _this - Database Class
+ * @returns {void}
  */
 
-// TODO: Check settings function
-const checkSettings = (_this: EasyDB): void => {};
+// TODO: Create validate settings function
+const validateSettings = (_this: EasyDB): void => {
+  // check file path ends with .betadb
+  // check properties themselves to see if they're correct types
+};
 
 /**
- * Creates the database file & writes some default content (depending on your settings if encrypted or not)
+ * Creates the database file & writes some default content (depending on your settings; the default data will slightly differ for everyone)
  * @param {EasyDB} _this - Database Class
  * @returns {object}
  */
@@ -67,8 +71,8 @@ const createDB = (_this: EasyDB) => {
  * @param {object} content - The object that needs to be written to the database
  * @returns {void}
  */
-// TODO: Writing to database function
+// TODO: Create writing to database function
 // - We will check settings here aswell
-const writeDB = (_this: EasyDB, content: object) => {};
+const writeDB = (_this: EasyDB, content: object): void => {};
 
-export { readDB, dbFileExists, createDB, writeDB };
+export { readDB, dbFileExists, createDB, writeDB, validateSettings };

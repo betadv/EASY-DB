@@ -5,6 +5,7 @@ import fs from "fs-extra";
  *
  * @param {string} path - Path of file (will automatically create any missing directories)
  * @param {?string} [content] - Any additional data to be written to the file (optional)
+ * @returns {void}
  */
 const createFile = (path: string, content?: string): void => {
   fs.ensureFileSync(path);
@@ -38,6 +39,7 @@ const readFile = (path: string): string => {
  *
  * @param {string} path
  * @param {string} content
+ * @returns {void}
  */
 const writeFile = (path: string, content: string): void => {
   return fs.writeFileSync(path, content);

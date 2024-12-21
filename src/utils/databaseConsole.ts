@@ -1,8 +1,16 @@
 import { styleText } from "util";
 import { EasyDB } from "../structures/database";
 
-const dbConsole: any = {
-  log: (_this: EasyDB, text: any, variables?: object) => {
+/**
+ * Database Console Custom Functions
+ * @type {dbConsole}
+ * @property {Function} dbConsole.success - Preferrably for success messages, green in color
+ * @property {Function} dbConsole.warning - Preferrably for warning messages, yellow in color
+ * @property {Function} dbConsole.info - Preferrably for information messages, blue in color
+ * @property {Function} dbConsole.error - Preferrably for error messages, red in color
+ */
+const dbConsole = {
+  success: (_this: EasyDB, text: any, variables?: object): void => {
     if (_this._logging.enabled === false) return;
     let content = text;
 
@@ -13,7 +21,7 @@ const dbConsole: any = {
       }
     console.log(styleText(["bold", "green"], content));
   },
-  warning: (_this: EasyDB, text: any, variables: object) => {
+  warning: (_this: EasyDB, text: any, variables?: object): void => {
     if (_this._logging.enabled === false) return;
     let content: string = text;
     // UPDATE ANY IN-TEXT VARIABLES IF THERE ARE ANY
@@ -25,7 +33,7 @@ const dbConsole: any = {
       return console.error(styleText(["bold", "yellow"], content));
     console.error(styleText(["bold", "yellow"], content));
   },
-  info: (_this: EasyDB, text: any, variables?: object) => {
+  info: (_this: EasyDB, text: any, variables?: object): void => {
     if (_this._logging.enabled === false) return;
     let content = text;
 
@@ -36,7 +44,7 @@ const dbConsole: any = {
       }
     console.error(styleText(["bold", "blue"], content));
   },
-  error: (_this: EasyDB, text: any, variables: object, error: any) => {
+  error: (_this: EasyDB, text: any, variables?: object, error?: any): void => {
     if (_this._logging.enabled === false) return;
     let content: string = text;
     // UPDATE ANY IN-TEXT VARIABLES IF THERE ARE ANY
