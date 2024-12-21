@@ -3,6 +3,7 @@ import { readDB, dbFileExists, createDB } from "../utils/databaseFunctions";
 import { locale } from "../data/locales";
 import { dbConsole } from "../utils/databaseConsole";
 import { fileExists } from "../utils/fileManager";
+import { EventEmitter } from "events";
 
 /**
  * Default database constructor, this will allow you to initialize the database by using the init() function
@@ -38,7 +39,7 @@ import { fileExists } from "../utils/fileManager";
  * db.init();
  */
 
-class EasyDB {
+class EasyDB extends EventEmitter {
   // CLASS PROPERTIES
   public _options: { path: string; prettier: boolean; interval: number };
   public _encryption: { enabled: boolean; secretKey: string };
@@ -49,23 +50,40 @@ class EasyDB {
   // CONSTRUCTOR
   constructor(
     private readonly options: {
-      path: string;
-      prettier: boolean;
-      interval: number;
-    } = dataDefaults,
+      path?: string;
+      prettier?: boolean;
+      interval?: number;
+    },
     private readonly encryption: {
-      enabled: boolean;
-      secretKey: string;
-    } = encryptionDefaults,
+      enabled?: boolean;
+      secretKey?: string;
+    },
     private readonly logging: {
-      enabled: boolean;
-      detailedErrors: boolean;
-    } = logDefaults
+      enabled?: boolean;
+      detailedErrors?: boolean;
+    }
   ) {
-    // super(); // remove comment from this when adding events
-    this._options = options;
-    this._encryption = encryption;
-    this._logging = logging;
+    super();
+
+    // CHECK SETTINGS INCASE THERE ARE MISSING ITEMS
+    // DATABASE OPTIONS
+    this._options = {
+      path: options.path || dataDefaults.path,
+      prettier: options.prettier || dataDefaults.prettier,
+      interval: options.interval || dataDefaults.interval,
+    };
+
+    // ENCRYPTION OPTIONS
+    this._encryption = {
+      enabled: encryption.enabled || encryptionDefaults.enabled,
+      secretKey: encryption.secretKey || encryptionDefaults.secretKey,
+    };
+
+    // LOGGING OPTIONS
+    this._logging = {
+      enabled: logging.enabled || logDefaults.enabled,
+      detailedErrors: logging.detailedErrors || logDefaults.detailedErrors,
+    };
   }
 
   // INITIALIZATION FUNCTION
@@ -88,9 +106,12 @@ class EasyDB {
       dbConsole.warning(this, locale.warning.databaseNotFound, {
         pathToDB: this._options.path,
       });
+
+      // CREATE DATABASE AND THEN RUN LOOP ONE MORE TIME
       createDB(this);
     }
 
+    // IF THIS ERROR SHOWS UP I GENUINELY HAVE NO IDEA WHAT'S WRONG OR HOW TO FIX IT
     return dbConsole.error(this, locale.errors.failedToLoadUnknown);
   }
 }
