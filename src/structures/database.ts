@@ -19,12 +19,14 @@ import { EventEmitter } from "events";
  * @param {Object} logging
  * @param {boolean} [logging.enabled=true] - Whether to enable console messages when anything happens
  * @param {boolean} [logging.detailedErrors=true] - Whether to include all thrown information (if there is anything extra) when you get an error. (Keep in mind, if this option is enabled, your app will close down on errors, so disable this on production)
+ * @returns {EasyDB}
  *
  * @example
  * const db = new EasyDB(
  *   {
  *     path: "./database/main.betadb",
  *     prettier: true,
+ *     interval: 1000,
  *   },
  *   {
  *     enabled: true,
@@ -32,7 +34,7 @@ import { EventEmitter } from "events";
  *   },
  *   {
  *     enabled: true,
- *    detailedErrors: true,
+ *     detailedErrors: true,
  *   }
  * );
  *
