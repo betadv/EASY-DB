@@ -2,7 +2,7 @@
   "name": "@betadv/easy-db",
   "version": "1.0.6-rewritten",
   "description": "fast and easy to use no-sql (honestly idk what this is) local database",
-  "main": "index.js",
+  "main": "index.ts",
   "type": "module",
   "scripts": {
     "test": "npx tsx tests/tests.ts"
