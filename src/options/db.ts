@@ -3,12 +3,12 @@ const dataDefaults: { path: string; prettier: boolean; interval: number } = {
   prettier: false,
   interval: 0,
 };
-const encryptionDefaults: { enabled: boolean; secretKey: string } = {
-  enabled: true,
+const encryptionDefaults: { encryptionEnabled: boolean; secretKey: string } = {
+  encryptionEnabled: true,
   secretKey: "beta-was-here",
 };
-const logDefaults: { enabled: boolean; detailedErrors: boolean } = {
-  enabled: true,
+const logDefaults: { logsEnabled: boolean; detailedErrors: boolean } = {
+  logsEnabled: true,
   detailedErrors: true,
 };
 

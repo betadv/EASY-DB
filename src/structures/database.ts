@@ -53,8 +53,11 @@ class EasyDB extends EventEmitter {
     prettier: boolean;
     interval: number;
   };
-  public readonly _encryption: { enabled: boolean; secretKey: string };
-  public readonly _logging: { enabled: boolean; detailedErrors: boolean };
+  public readonly _encryption: {
+    encryptionEnabled: boolean;
+    secretKey: string;
+  };
+  public readonly _logging: { logsEnabled: boolean; detailedErrors: boolean };
   private _ready: boolean = false;
   private _cache: object = {};
 
@@ -66,11 +69,11 @@ class EasyDB extends EventEmitter {
       interval?: number;
     },
     private readonly encryption: {
-      enabled?: boolean;
+      encryptionEnabled?: boolean;
       secretKey?: string;
     },
     private readonly logging: {
-      enabled?: boolean;
+      logsEnabled?: boolean;
       detailedErrors?: boolean;
     }
   ) {
@@ -85,13 +88,14 @@ class EasyDB extends EventEmitter {
 
     // ENCRYPTION OPTIONS
     this._encryption = {
-      enabled: encryption.enabled || encryptionDefaults.enabled,
+      encryptionEnabled:
+        encryption.encryptionEnabled || encryptionDefaults.encryptionEnabled,
       secretKey: encryption.secretKey || encryptionDefaults.secretKey,
     };
 
     // LOGGING OPTIONS
     this._logging = {
-      enabled: logging.enabled || logDefaults.enabled,
+      logsEnabled: logging.logsEnabled || logDefaults.logsEnabled,
       detailedErrors: logging.detailedErrors || logDefaults.detailedErrors,
     };
 
@@ -107,6 +111,7 @@ class EasyDB extends EventEmitter {
    */
   public init(): void {
     // SHORT LOOP UNTIL DATABASE LOADED (IF IT FAILS IT WILL RETRY, MAXIMUM 5 ATTEMPTS)
+
     for (
       let attempts: number = 1;
       this._ready === false && attempts <= 5;
@@ -118,6 +123,7 @@ class EasyDB extends EventEmitter {
       if (dbFileExists(this) === true) {
         this._cache = readDB(this);
         this._ready = true;
+
         dbConsole.success(this, locale.success.loadedSuccessfuly);
 
         // TODO: Implement event when database is loaded
@@ -128,7 +134,6 @@ class EasyDB extends EventEmitter {
       });
 
       // CREATE DATABASE AND THEN RUN LOOP ONE MORE TIME
-
       // TODO: Implement event when database is being created
       createDB(this);
     }

@@ -11,7 +11,7 @@ import { EasyDB } from "../structures/database";
  */
 const dbConsole = {
   success: (_this: EasyDB, text: any, variables?: object): void => {
-    if (_this._logging.enabled === false) return;
+    if (_this._logging.logsEnabled === false) return;
     let content = text;
 
     // UPDATE ANY IN-TEXT VARIABLES IF THERE ARE ANY
@@ -22,7 +22,7 @@ const dbConsole = {
     console.log(styleText(["bold", "green"], content));
   },
   warning: (_this: EasyDB, text: any, variables?: object): void => {
-    if (_this._logging.enabled === false) return;
+    if (_this._logging.logsEnabled === false) return;
     let content: string = text;
     // UPDATE ANY IN-TEXT VARIABLES IF THERE ARE ANY
     if (typeof variables === "object")
@@ -34,7 +34,7 @@ const dbConsole = {
     console.error(styleText(["bold", "yellow"], content));
   },
   info: (_this: EasyDB, text: any, variables?: object): void => {
-    if (_this._logging.enabled === false) return;
+    if (_this._logging.logsEnabled === false) return;
     let content = text;
 
     // UPDATE ANY IN-TEXT VARIABLES IF THERE ARE ANY
@@ -44,8 +44,13 @@ const dbConsole = {
       }
     console.error(styleText(["bold", "blue"], content));
   },
-  error: (_this: EasyDB, text: any, variables?: object, error?: any): void => {
-    if (_this._logging.enabled === false) return;
+  error: (
+    _this: EasyDB,
+    text: any,
+    variables?: object,
+    error?: any,
+    overrideSettings?: boolean
+  ): void => {
     let content: string = text;
     // UPDATE ANY IN-TEXT VARIABLES IF THERE ARE ANY
     if (typeof variables === "object")
@@ -53,11 +58,18 @@ const dbConsole = {
         content = content.replace("{{" + key + "}}", value);
       }
 
-    if (_this._logging.detailedErrors)
+    if (overrideSettings === true)
       throw console.error(
         styleText(["bold", "redBright"], content) + "\n" + error
       );
-    new Error(styleText(["bold", "redBright"], content));
+
+    if (_this._logging.logsEnabled === false) return;
+    if (_this._logging.detailedErrors)
+      new Error(styleText(["bold", "redBright"], content));
+    else
+      throw console.error(
+        styleText(["bold", "redBright"], content) + "\n" + error
+      );
   },
 };
 

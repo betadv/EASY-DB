@@ -22,7 +22,7 @@ const stretchKey = (key: string, keyLength: number): Buffer => {
  * @param {object} contentObj - The object you want to encrypt
  * @returns {string}
  */
-const encrypt = (_this: EasyDB, contentObj: object): string => {
+const encrypt = (_this: EasyDB, contentObj: object): any => {
   try {
     const cipher = crypto.createCipheriv(
       settings.algorithm,
@@ -43,7 +43,7 @@ const encrypt = (_this: EasyDB, contentObj: object): string => {
  * @param {string} encryptedContent - Encrypted data to decrypt
  * @returns {string}
  */
-const decrypt = (_this: EasyDB, encryptedContent: string): string => {
+const decrypt = (_this: EasyDB, encryptedContent: string): any => {
   try {
     const decipher = crypto.createDecipheriv(
       settings.algorithm,

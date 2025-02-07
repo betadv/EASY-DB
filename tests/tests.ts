@@ -2,13 +2,15 @@ import { EasyDB } from "../index";
 
 const db = new EasyDB(
   {
-    prettier: true,
+    path: 123123123,
+    prettier: "true",
   },
   {
     secretKey: "beta-was-here",
   },
+
   {
-    enabled: true,
+    logsEnabled: true,
   }
 );
 

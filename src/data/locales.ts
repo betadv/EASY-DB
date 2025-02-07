@@ -2,7 +2,7 @@ import { packageConfig } from "./package";
 
 const locale: any = {
   errors: {
-    unableToRead: `ERROR: Unable to read the database. \nThe database might have a corrupted format (wrongly formatted in json), it's possible you might have changed the secret key accidentally or switched encryption off and forgot to migrate your data;\nto migrate your database data, use the '<EasyDB>.migrate()' function, which is a separate function in the package. If you run into trouble, please refer to the documentation. \n${packageConfig.docsLink}`,
+    unableToRead: `ERROR: Unable to read the database. \nThe database might have a corrupted format (wrongly formatted in json syntax), it's possible you might have changed the secret key accidentally or switched encryption off and forgot to migrate your data;\nto migrate your database data, use the '<EasyDB>.migrate()' function, which is a separate function in the package. If you run into trouble, please refer to the documentation. \n${packageConfig.docsLink}`,
     alreadyLoaded:
       "ERROR: Database has already been initialized, you can't initialize it twice.",
     unableToCreateFile:
@@ -18,8 +18,7 @@ const locale: any = {
       invalidFileType: "ERROR: Database file path does not end in .betadb.",
       invalidItemType: {
         singleItem: `ERROR: Property \`{{propertyType}}.{{propertyKey}}\` is of the wrong type ({{wrongType}}), the correct type is \`{{correctType}}\`. Please double check your configuration; if you run into trouble, refer to the documentation.\n${packageConfig.docsLink}`,
-        // TODO: Allow all the problems to show up at once to provide a better experience for the end user
-        //   multipleItems: `ERROR: The following properties have the wrong type: {{incorrectProperties}}\nPlease correct the mistakes; if you run into trouble, refer to the documentation.\n${packageConfig.docsLink}`,
+        multipleItems: `ERROR: The following properties have the wrong type: \n{{incorrectProperties}}\nPlease correct the mistakes; if you run into trouble, refer to the documentation.\n${packageConfig.docsLink}`,
       },
     },
   },
