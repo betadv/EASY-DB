@@ -24,12 +24,12 @@
   },
   "dependencies": {
     "events": "^3.3.0",
-    "fs-extra": "^11.2.0",
-    "typescript": "^5.7.2"
+    "fs-extra": "^11.3.0",
+    "typescript": "^5.7.3"
   },
   "devDependencies": {
     "@types/events": "^3.0.3",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.10.2"
+    "@types/node": "^22.13.1"
   }
 }
