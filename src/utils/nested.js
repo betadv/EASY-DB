@@ -73,6 +73,7 @@ const unpush = (object, item, value, count) => {
     let val = currentObject[last].indexOf(value);
     while (i <= count) {
       if (val == -1) return;
+      // NOTE: I HAVE NO CLUE WHAT THIS WAS
       console.log(val);
       currentObject[last].splice(val, 1);
       val = currentObject[last].indexOf(value);

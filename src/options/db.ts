@@ -4,7 +4,7 @@ const dataDefaults: { path: string; prettier: boolean; interval: number } = {
   interval: 0,
 };
 const encryptionDefaults: { encryptionEnabled: boolean; secretKey: string } = {
-  encryptionEnabled: true,
+  encryptionEnabled: false,
   secretKey: "beta-was-here",
 };
 const logDefaults: { logsEnabled: boolean; detailedErrors: boolean } = {

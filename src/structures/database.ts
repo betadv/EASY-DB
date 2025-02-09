@@ -9,6 +9,7 @@ import { locale } from "../data/locales";
 import { dbConsole } from "../utils/databaseConsole";
 import { fileExists } from "../utils/fileManager";
 import { EventEmitter } from "events";
+import { emitEvent } from "../utils/eventsHandler";
 
 /**
  * Default database constructor, this will allow you to initialize the database by using the init() function
@@ -19,10 +20,10 @@ import { EventEmitter } from "events";
  * @param {boolean} [prettier=false] - Whether to format the database file into a readable file (only works if encryption is disabled)
  * @param {number} [interval=0] - The rate (in miliseconds) at which the database file gets updated (the cache remains live); recommended value is atleast 1000ms (1 second), if this value is set to below 500ms then the database will be written over every time a change occurs
  * @param {Object} encryption
- * @param {boolean} [encryption.enabled=true] - Whether to enable database encryption or not (default is true)
+ * @param {boolean} [encryption.encryptionEnabled=false] - Whether to enable database encryption or not (default is false)
  * @param {string} [encryption.secretKey="beta-was-here"] - The secret key which the encryption method uses to keep your password safe (default is "beta-was-here")
  * @param {Object} logging
- * @param {boolean} [logging.enabled=true] - Whether to enable console messages when anything happens
+ * @param {boolean} [logging.logsEnabled=true] - Whether to enable console messages when anything happens
  * @param {boolean} [logging.detailedErrors=true] - Whether to include all thrown information (if there is anything extra) when you get an error. (Keep in mind, if this option is enabled, your app will close down on errors, so disable this on production)
  * @returns {EasyDB}
  *
@@ -34,11 +35,11 @@ import { EventEmitter } from "events";
  *     interval: 1000,
  *   },
  *   {
- *     enabled: true,
+ *     encryptionEnabled: false,
  *     secretKey: "beta-was-here",
  *   },
  *   {
- *     enabled: true,
+ *     logsEnabled: true,
  *     detailedErrors: true,
  *   }
  * );
@@ -60,6 +61,7 @@ class EasyDB extends EventEmitter {
   public readonly _logging: { logsEnabled: boolean; detailedErrors: boolean };
   private _ready: boolean = false;
   private _cache: object = {};
+  private _updateInterval!: NodeJS.Timeout;
 
   // CONSTRUCTOR
   constructor(
@@ -67,36 +69,35 @@ class EasyDB extends EventEmitter {
       path?: string;
       prettier?: boolean;
       interval?: number;
-    },
+    } = {},
     private readonly encryption: {
       encryptionEnabled?: boolean;
       secretKey?: string;
-    },
+    } = {},
     private readonly logging: {
       logsEnabled?: boolean;
       detailedErrors?: boolean;
-    }
+    } = {}
   ) {
     super();
-
     // DATABASE OPTIONS
     this._options = {
-      path: options.path || dataDefaults.path,
-      prettier: options.prettier || dataDefaults.prettier,
-      interval: options.interval || dataDefaults.interval,
+      path: options.path ?? dataDefaults.path,
+      prettier: options.prettier ?? dataDefaults.prettier,
+      interval: options.interval ?? dataDefaults.interval,
     };
 
     // ENCRYPTION OPTIONS
     this._encryption = {
       encryptionEnabled:
-        encryption.encryptionEnabled || encryptionDefaults.encryptionEnabled,
-      secretKey: encryption.secretKey || encryptionDefaults.secretKey,
+        encryption.encryptionEnabled ?? encryptionDefaults.encryptionEnabled,
+      secretKey: encryption.secretKey ?? encryptionDefaults.secretKey,
     };
 
     // LOGGING OPTIONS
     this._logging = {
-      logsEnabled: logging.logsEnabled || logDefaults.logsEnabled,
-      detailedErrors: logging.detailedErrors || logDefaults.detailedErrors,
+      logsEnabled: logging.logsEnabled ?? logDefaults.logsEnabled,
+      detailedErrors: logging.detailedErrors ?? logDefaults.detailedErrors,
     };
 
     // VALIDATE SETTINGS
@@ -112,38 +113,52 @@ class EasyDB extends EventEmitter {
   public init(): void {
     // SHORT LOOP UNTIL DATABASE LOADED (IF IT FAILS IT WILL RETRY, MAXIMUM 5 ATTEMPTS)
 
-    for (
-      let attempts: number = 1;
-      this._ready === false && attempts <= 5;
-      attempts++
-    ) {
-      dbConsole.info(this, locale.info.attemptingToLoad, {
-        attemptNumber: attempts,
-      });
-      if (dbFileExists(this) === true) {
-        this._cache = readDB(this);
-        this._ready = true;
+    const tryLoadDatabase = (): void => {
+      for (
+        let attempts: number = 1;
+        this._ready === false && attempts <= 5;
+        attempts++
+      ) {
+        dbConsole.info(this, locale.info.attemptingToLoad, {
+          attemptNumber: attempts,
+        });
+        if (dbFileExists(this) === true) {
+          this._cache = readDB(this);
+          this._ready = true;
 
-        dbConsole.success(this, locale.success.loadedSuccessfuly);
+          dbConsole.success(this, locale.success.loadedSuccessfuly);
 
-        // TODO: Implement event when database is loaded
-        return;
+          emitEvent(this, "databaseReady");
+          return;
+        }
+        dbConsole.warning(this, locale.warning.databaseNotFound, {
+          pathToDB: this._options.path,
+        });
+
+        // CREATE DATABASE AND THEN RUN LOOP ONE MORE TIME
+        emitEvent(this, "databaseCreated");
+        createDB(this);
       }
-      dbConsole.warning(this, locale.warning.databaseNotFound, {
-        pathToDB: this._options.path,
-      });
+    };
 
-      // CREATE DATABASE AND THEN RUN LOOP ONE MORE TIME
-      // TODO: Implement event when database is being created
-      createDB(this);
-    }
+    const setupInterval = (): void => {
+      if (this._options.interval > 500)
+        this._updateInterval = setInterval(() => {
+          // TODO: Make it update the database using the cache
 
-    // IF THIS ERROR SHOWS UP I GENUINELY HAVE NO IDEA WHAT'S WRONG OR HOW TO FIX IT
+          emitEvent(this, "databaseUpdatedInterval");
+        }, this._options.interval);
+    };
+
+    tryLoadDatabase();
+    setupInterval();
+    // IF THIS ERROR SHOWS UP I GENUINELY HAVE NO IDEA WHAT'S WRONG OR HOW TO FIX IT CUZ IT'S OUTSIDE OF ANY FUNCTIONS
     return dbConsole.error(this, locale.errors.failedToLoadUnknown);
   }
 
   // TODO: Make it so that if the database interval is below 500, it will save data every time it's updated
 
+  // TODO: Events in all functions
   // TODO: Make all functions throw errors if the database hasn't been initialized yet
 
   // TODO: Create all(options: { format: "object" || "string" }) => any function

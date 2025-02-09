@@ -3,7 +3,6 @@ import { encrypt, decrypt } from "../encryption/databaseEncrypt";
 import { EasyDB } from "../structures/database";
 import { dbConsole } from "./databaseConsole";
 import { createFile, fileExists, readFile, writeFile } from "./fileManager";
-import { dataDefaults, encryptionDefaults, logDefaults } from "../options/db";
 
 /**
  * Checks if the database file exists
@@ -46,72 +45,142 @@ const readDB = (_this: EasyDB): object => {
  * @param {EasyDB} _this - Database Class
  * @returns {void}
  */
-
-// TODO: Create validate settings function
+// TODO: For me in 12 years, I should probably somehow remove the hardcoded error here with the ".betadb" requirement, but im too lazy right now so this is what u get future me
 const validateSettings = (_this: EasyDB): void => {
-  let optionsToCheck: object[] = [
-    {
-      propertyType: "options",
-      propertyKey: "path",
-      correctType: typeof dataDefaults.path,
-    },
-    {
-      propertyType: "options",
-      propertyKey: "prettier",
-      correctType: typeof dataDefaults.prettier,
-    },
-    {
-      propertyType: "options",
-      propertyKey: "interval",
-      correctType: typeof dataDefaults.interval,
-    },
-  ];
-
-  // TODO: Add rest of checks
   let errorList: {
-    propertyType: string;
-    propertyKey: string;
-    wrongType: string;
-    correctType: string;
+    propertyType?: string;
+    propertyKey?: string;
+    wrongType?: string;
+    correctType?: string;
+    specialError?: {
+      enabled: boolean;
+      message: string;
+    };
   }[] = [];
 
-  for (let i: number = 0; i < optionsToCheck.length; i++) {}
+  // CHECK ALL OPTIONS
+  optionChecks();
 
-  // RETURN ERRORS
+  // if (!_this._options.path.endsWith(".betadb"))
   if (errorList.length > 1) {
+    // RETURN ERRORS
     let incorrectProperties: string[] = [];
 
-    for (
-      let property: number = 0;
-      property + 1 < errorList.length;
-      property++
-    ) {
-      incorrectProperties.push(
-        `- ${errorList[property].propertyType}.${errorList[property].propertyKey}; given type is \`${errorList[property].wrongType}\`, correct type is \`${errorList[property].correctType}\``
-      );
+    for (let property: number = 0; property < errorList.length; property++) {
+      if (errorList[property].specialError?.enabled === true) {
+        incorrectProperties.push(
+          `+ ${errorList[property].specialError?.message}`
+        );
+      } else
+        incorrectProperties.push(
+          `- ${errorList[property].propertyType}.${errorList[property].propertyKey}; given value is of type \`${errorList[property].wrongType}\` whilst the correct type is \`${errorList[property].correctType}\``
+        );
     }
-
     return dbConsole.error(
       _this,
       locale.errors.settings.invalidItemType.multipleItems,
-      { incorrectProperties: incorrectProperties.join("\n") },
+      {
+        incorrectProperties: incorrectProperties.join("\n"),
+        currentPath: _this._options.path,
+      },
       "",
       true
     );
   }
-  if (errorList.length === 1)
-    dbConsole.error(
+  if (errorList.length === 1) {
+    if (errorList[0].specialError?.enabled !== false) {
+      return dbConsole.error(
+        _this,
+        `ERROR: ${errorList[0].specialError?.message}`,
+        { currentPath: _this._options.path },
+        "",
+        true
+      );
+    }
+    return dbConsole.error(
       _this,
       locale.errors.settings.invalidItemType.singleItem,
       errorList[0],
       "",
       true
     );
+  }
 
-  // LAST FINAL CHECK FOR DATABASE FILETYPE
-  if (!_this._options.path.endsWith(".betadb"))
-    return dbConsole.error(_this, locale.errors.settings.invalidFileType);
-
+  function optionChecks() {
+    if (typeof _this._options.path === "string") {
+      if (!_this._options.path.endsWith(".betadb"))
+        errorList.push({
+          specialError: {
+            enabled: true,
+            message: locale.errors.settings.invalidDatabasePathType,
+          },
+        });
+    }
+    let givenType: string;
+    givenType = typeof _this._options.path;
+    if (givenType !== "string") {
+      errorList.push({
+        propertyType: "options",
+        propertyKey: "path",
+        wrongType: givenType,
+        correctType: "string",
+      });
+    }
+    givenType = typeof _this._options.prettier;
+    if (givenType !== "boolean") {
+      errorList.push({
+        propertyType: "options",
+        propertyKey: "prettier",
+        wrongType: givenType,
+        correctType: "boolean",
+      });
+    }
+    givenType = typeof _this._options.interval;
+    if (givenType !== "number") {
+      errorList.push({
+        propertyType: "options",
+        propertyKey: "interval",
+        wrongType: givenType,
+        correctType: "number",
+      });
+    }
+    givenType = typeof _this._encryption.encryptionEnabled;
+    if (givenType !== "boolean") {
+      errorList.push({
+        propertyType: "encryption",
+        propertyKey: "encryptionEnabled",
+        wrongType: givenType,
+        correctType: "boolean",
+      });
+    }
+    givenType = typeof _this._encryption.secretKey;
+    if (givenType !== "string") {
+      errorList.push({
+        propertyType: "encryption",
+        propertyKey: "secretKey",
+        wrongType: givenType,
+        correctType: "string",
+      });
+    }
+    givenType = typeof _this._logging.logsEnabled;
+    if (givenType !== "boolean") {
+      errorList.push({
+        propertyType: "logging",
+        propertyKey: "logsEnabled",
+        wrongType: givenType,
+        correctType: "boolean",
+      });
+    }
+    givenType = typeof _this._logging.detailedErrors;
+    if (givenType !== "boolean") {
+      errorList.push({
+        propertyType: "logging",
+        propertyKey: "detailedErrors",
+        wrongType: givenType,
+        correctType: "boolean",
+      });
+    }
+  }
   // check file path ends with .betadb
   // check properties themselves to see if they're correct types
 };

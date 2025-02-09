@@ -1,7 +1,7 @@
 /* 
     TODO: Create migrate function from encrypted to decrypted version and vice-versa
     - When encrypting make the entire file non-formatted so no data gets transferred wrong.
-    - Decrypting make it so that it comes out as per settings (prettier or not)
+    - Decrypting makes it so that it comes out as per configuration settings (prettier or not)
 */
 
 import { EasyDB } from "../structures/database";
